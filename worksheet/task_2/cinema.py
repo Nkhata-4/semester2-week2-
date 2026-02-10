@@ -25,7 +25,6 @@ def get_connection(db_path="tickets.db"):
 # the query is treated as a 'string', not a query
 def customer_tickets(conn, customer_id):
     db = get_connection()
-    conn.row_factory = sqlite3.Row
     query = """SELECT 
     films.title, screenings.screen, tickets.price
     FROM 
@@ -38,7 +37,7 @@ def customer_tickets(conn, customer_id):
     cursor = db.cursor()  
 
     for row in cursor.execute(query):
-        return(list(row))
+        return(row)
     
     db.close()
     
@@ -69,7 +68,7 @@ def screening_sales(conn):
     cursor = db.cursor()
 
     for row in cursor.execute(query):
-        return(row)
+        return(list(row))
     
     db.close()
 
