@@ -84,7 +84,8 @@ def screening_sales(conn):
 
 
 def top_customers_by_spend(conn, limit):
-
+    
+    db = get_connection()
     query = """SELECT
     customers.customer_name, SUM(tickets.price) AS total_spent
     FROM 
@@ -93,10 +94,13 @@ def top_customers_by_spend(conn, limit):
     GROUP BY customers.customer_id
     ORDER BY total_spend LIMIT limit DESC
     WHERE total_spent > 0;"""
+    
+    cursor = db.cursor()
 
-    for row in query:
+    for row in cursor.execute(query):
         return(list(row))
-
+    
+    db.close()
     
     """
     Return a list of tuples:
