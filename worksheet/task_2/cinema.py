@@ -11,8 +11,20 @@ import sqlite3
 
 DB_PATH = "tickets.db"
 
+def get_connection(db_path="tickets.db"):
+    """
+    Establish a connection to the SQLite database.
+    Returns a connection object.
+    """
+    conn = sqlite3.connect("tickets.db")
+
+    conn.row_factory = sqlite3.Row
+
+    return conn
+
 # the query is treated as a 'string', not a query
 def customer_tickets(conn, customer_id):
+    db = get_connection()
     conn.row_factory = sqlite3.Row
     query = """SELECT 
     films.title, screenings.screen, tickets.price
@@ -23,9 +35,12 @@ def customer_tickets(conn, customer_id):
     ON screenings.screening_id = tickets.screening_id
     ORDER BY films.title;
     """
+    cursor = db.cursor()  
 
-    for row in query:
-        return(row)
+    for row in cursor.execute(query):
+        return(list(row))
+    
+    db.close()
     
 
 
@@ -36,10 +51,11 @@ def customer_tickets(conn, customer_id):
     Include only tickets purchased by the given customer_id.
     Order results by film title alphabetically.
     """
-    pass
 
 
 def screening_sales(conn):
+
+    db = get_connection()
 
     query = """SELECT
     screenings.screening_id, films.title, COUNT(ticket_id) AS tickets_sold
@@ -49,10 +65,13 @@ def screening_sales(conn):
     JOIN tickets
     ON screenings.screening_id = tickets.ticket_id
     ORDER BY tickets_sold DESC;"""
+    
+    cursor = db.cursor()
 
-    for row in query:
+    for row in cursor.execute(query):
         return(row)
     
+    db.close()
 
     """
     Return a list of tuples:
@@ -61,7 +80,7 @@ def screening_sales(conn):
     Include all screenings, even if tickets_sold is 0.
     Order results by tickets_sold descending.
     """
-    pass
+
 
 
 def top_customers_by_spend(conn, limit):
@@ -76,7 +95,7 @@ def top_customers_by_spend(conn, limit):
     WHERE total_spent > 0;"""
 
     for row in query:
-        print(list(row))
+        return(list(row))
 
     
     """
@@ -88,4 +107,4 @@ def top_customers_by_spend(conn, limit):
     Order by total_spent descending.
     Limit the number of rows returned to `limit`.
     """
-    pass
+
