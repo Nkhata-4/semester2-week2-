@@ -9,23 +9,24 @@ Please do not add any additional code underneath these functions.
 
 import sqlite3
 
-DB_PATH = "tickets.db"
 
-def get_connection(db_path="tickets.db"):
-    """
-    Establish a connection to the SQLite database.
-    Returns a connection object.
-    """
-    conn = sqlite3.connect("tickets.db")
-
-    conn.row_factory = sqlite3.Row
-
-    return conn
-
+conn = sqlite3.connect("tickets.db")
+cursor = conn.cursor()
 # the query is treated as a 'string', not a query
 def customer_tickets(conn, customer_id):
-    db = get_connection()
-    query = """SELECT 
+    
+
+    #query = """SELECT 
+    #films.title, screenings.screen, tickets.price
+    #FROM 
+    #films JOIN screenings
+    #ON films.film_id = screenings.film_id
+    #JOIN tickets
+    #ON screenings.screening_id = tickets.screening_id
+    #ORDER BY films.title;
+    #"""
+
+    for row in cursor.execute("""SELECT
     films.title, screenings.screen, tickets.price
     FROM 
     films JOIN screenings
@@ -33,10 +34,9 @@ def customer_tickets(conn, customer_id):
     JOIN tickets
     ON screenings.screening_id = tickets.screening_id
     ORDER BY films.title;
-    """
-    conn = sqlite3.connect("tickets.db")
+    """):
+        return(list(row))
     
-
 
     """
     Return a list of tuples:
