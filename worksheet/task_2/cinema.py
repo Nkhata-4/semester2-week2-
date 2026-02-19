@@ -34,12 +34,7 @@ def customer_tickets(conn, customer_id):
     ON screenings.screening_id = tickets.screening_id
     ORDER BY films.title;
     """
-    cursor = db.cursor()  
-
-    for row in cursor.execute(query):
-        return(row)
-    
-    db.close()
+    conn = sqlite3.connect("tickets.db")
     
 
 
