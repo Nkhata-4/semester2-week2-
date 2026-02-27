@@ -14,19 +14,10 @@ conn = sqlite3.connect("tickets.db")
 cursor = conn.cursor()
 # the query is treated as a 'string', not a query
 def customer_tickets(conn, customer_id):
-    
 
-    #query = """SELECT 
-    #films.title, screenings.screen, tickets.price
-    #FROM 
-    #films JOIN screenings
-    #ON films.film_id = screenings.film_id
-    #JOIN tickets
-    #ON screenings.screening_id = tickets.screening_id
-    #ORDER BY films.title;
-    #"""
-
-    for row in cursor.execute("""SELECT
+    conn = sqlite3.connect("tickets.db")
+    cursor = conn.cursor()
+    query = """SELECT 
     films.title, screenings.screen, tickets.price
     FROM 
     films JOIN screenings
@@ -34,7 +25,9 @@ def customer_tickets(conn, customer_id):
     JOIN tickets
     ON screenings.screening_id = tickets.screening_id
     ORDER BY films.title;
-    """):
+    """
+
+    for row in cursor.execute(query):
         return(list(row))
     
 
