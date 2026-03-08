@@ -8,15 +8,14 @@ Please do not add any additional code underneath these functions.
 """
 
 import sqlite3
+def get_connection(db_path="tickets.db"):
+    conn = sqlite3.connect("tickets.db")
+    conn.row_factory = sqlite3.Row  # Allows access by column name
+    return conn
 
-
-conn = sqlite3.connect("tickets.db")
-cursor = conn.cursor()
 # the query is treated as a 'string', not a query
 def customer_tickets(conn, customer_id):
 
-    conn = sqlite3.connect("tickets.db")
-    cursor = conn.cursor()
     query = """SELECT 
     films.title, screenings.screen, tickets.price
     FROM 
@@ -26,8 +25,8 @@ def customer_tickets(conn, customer_id):
     ON screenings.screening_id = tickets.screening_id
     ORDER BY films.title;
     """
-
-    for row in cursor.execute(query):
+    cursor = conn.execute(query)
+    for row in cursor:
         return(list(row))
     
 
