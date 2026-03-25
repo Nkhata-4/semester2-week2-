@@ -8,12 +8,9 @@ Please do not add any additional code underneath these functions.
 """
 
 import sqlite3
-def get_connection(db_path="tickets.db"):
-    conn = sqlite3.connect("tickets.db")
-    conn.row_factory = sqlite3.Row  # Allows access by column name
-    return conn
+conn = sqlite3.connect("tickets.db")
+cursor = conn.cursor()
 
-# the query is treated as a 'string', not a query
 def customer_tickets(conn, customer_id):
 
     query = """SELECT 
@@ -23,12 +20,14 @@ def customer_tickets(conn, customer_id):
     ON films.film_id = screenings.film_id
     JOIN tickets
     ON screenings.screening_id = tickets.screening_id
+    WHERE customer_id = ?
     ORDER BY films.title;
     """
-    cursor = conn.execute(query)
-    for row in cursor:
-        return(list(row))
+    cursor.execute(query, (customer_id,))
+    rows = cursor.fetchall()
+    return rows
     
+    conn.close()
 
     """
     Return a list of tuples:
@@ -41,23 +40,21 @@ def customer_tickets(conn, customer_id):
 
 def screening_sales(conn):
 
-    db = get_connection()
-
     query = """SELECT
     screenings.screening_id, films.title, COUNT(ticket_id) AS tickets_sold
     FROM 
     films JOIN screenings
-    ON films.film_id = screenings.screening_id
-    JOIN tickets
-    ON screenings.screening_id = tickets.ticket_id
+    ON films.film_id = screenings.film_id
+    LEFT JOIN tickets
+    ON screenings.screening_id = tickets.screening_id
+    GROUP BY screenings.screening_id, films.title
     ORDER BY tickets_sold DESC;"""
     
-    cursor = db.cursor()
-
-    for row in cursor.execute(query):
-        return(list(row))
+    cursor.execute(query)
+    rows = cursor.fetchall()
+    return rows
     
-    db.close()
+    conn.close()
 
     """
     Return a list of tuples:
@@ -70,24 +67,21 @@ def screening_sales(conn):
 
 
 def top_customers_by_spend(conn, limit):
-    
-    db = get_connection()
+
     query = """SELECT
     customers.customer_name, SUM(tickets.price) AS total_spent
     FROM 
     customers JOIN tickets
     ON customers.customer_id = tickets.customer_id
     GROUP BY customers.customer_id
-    ORDER BY total_spend LIMIT limit DESC
-    WHERE total_spent > 0;"""
+    ORDER BY total_spent DESC
+    LIMIT ?;""" 
+    cursor.execute(query, (limit,))
+    rows = cursor.fetchall()
+    return rows
     
-    cursor = db.cursor()
+    conn.close()
 
-    for row in cursor.execute(query):
-        return(list(row))
-    
-    db.close()
-    
     """
     Return a list of tuples:
     (customer_name, total_spent)
