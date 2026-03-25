@@ -26,7 +26,7 @@ def customer_tickets(conn, customer_id):
     cursor.execute(query, (customer_id,))
     rows = cursor.fetchall()
     return rows
-    
+
     conn.close()
 
     """
