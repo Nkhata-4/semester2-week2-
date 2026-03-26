@@ -8,8 +8,8 @@ Please do not add any additional code underneath these functions.
 """
 
 import sqlite3
-conn = sqlite3.connect("tickets.db")
-cursor = conn.cursor()
+#conn = sqlite3.connect("tickets.db")
+#cursor = conn.cursor()
 
 def customer_tickets(conn, customer_id):
 
