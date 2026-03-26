@@ -8,10 +8,12 @@ Please do not add any additional code underneath these functions.
 """
 
 import sqlite3
-#conn = sqlite3.connect("tickets.db")
+conn = sqlite3.connect("tickets.db")
 cursor = conn.cursor()
 
 def customer_tickets(conn, customer_id):
+
+    conn = sqlite3.connect("tickets.db")
     cursor = conn.cursor()
 
     query = """SELECT 
@@ -40,6 +42,8 @@ def customer_tickets(conn, customer_id):
 
 
 def screening_sales(conn):
+
+    conn = sqlite3.connect("tickets.db")
     cursor = conn.cursor()
 
     query = """SELECT
@@ -69,6 +73,8 @@ def screening_sales(conn):
 
 
 def top_customers_by_spend(conn, limit):
+
+    conn = sqlite3.connect("tickets.db")
     cursor = conn.cursor()
 
     query = """SELECT
