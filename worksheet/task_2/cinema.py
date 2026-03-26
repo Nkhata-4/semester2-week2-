@@ -8,10 +8,11 @@ Please do not add any additional code underneath these functions.
 """
 
 import sqlite3
-conn = sqlite3.connect("tickets.db")
+#conn = sqlite3.connect("tickets.db")
 cursor = conn.cursor()
 
 def customer_tickets(conn, customer_id):
+    cursor = conn.cursor()
 
     query = """SELECT 
     films.title, screenings.screen, tickets.price
@@ -39,6 +40,7 @@ def customer_tickets(conn, customer_id):
 
 
 def screening_sales(conn):
+    cursor = conn.cursor()
 
     query = """SELECT
     screenings.screening_id, films.title, COUNT(ticket_id) AS tickets_sold
@@ -67,6 +69,7 @@ def screening_sales(conn):
 
 
 def top_customers_by_spend(conn, limit):
+    cursor = conn.cursor()
 
     query = """SELECT
     customers.customer_name, SUM(tickets.price) AS total_spent
